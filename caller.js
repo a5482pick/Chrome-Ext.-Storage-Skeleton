@@ -22,7 +22,7 @@ function makeChanges2() {
     document.getElementById("area").value = document.getElementById("area").value + "blue";
 }
 
-
+//This alert includes data left uncleared from the previous session.
 function alertData()   {
     chrome.storage.local.get(function(items) {      
              
@@ -35,7 +35,7 @@ function alertData()   {
     });
 };
 
-
+//This function both saves the new data, and alerts the user of the new data.
 function saveChanges() {
 
     var value1 = document.getElementById("area").value;
@@ -46,6 +46,7 @@ function saveChanges() {
         return;
     }
     
+    //This object is the required format of the new data.
     var dataObject = {'value1' : value1, 'value2' : value2};
     
     chrome.storage.local.set(dataObject, function() {
