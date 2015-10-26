@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('inStore').addEventListener('click', alertData);
 });
 
-
+//Clear all storage data.
 function clearMemory() {
     chrome.storage.local.clear(function() {alert("Storage cleared.")});
 }
@@ -22,46 +22,48 @@ function makeChanges2() {
     document.getElementById("area").value = document.getElementById("area").value + "blue";
 }
 
-//This alert includes data left uncleared from the previous session.
+
+//This alert shows ALL data saved since the last clearMemory() call.
+//Every time data is put in storage, it is appended.  No previous data is lost.
 function alertData()   {
+ 
     chrome.storage.local.get(function(items) {      
-             
         var values = "";
+        
+        //'items' object is created/appended as dataObject in function saveChanges().
         for (key in items) {
-                
             values = values + " " + items[key];
         }        
         alert(values);
     });
 };
 
-//This function both saves the new data, and alerts the user of the new data.
+
+//This functions appends the new storage data onto the end of the old storage data.
 function saveChanges() {
 
-    var value1 = document.getElementById("area").value;
-    var value2 = document.getElementById("area2").value;
-    
-    if (!value1 || !value2) {
-        alert('Error: Enter text in both boxes.');
-        return;
-    }
-    
-    //This object is the required format of the new data.
-    var dataObject = {'value1' : value1, 'value2' : value2};
-    
-    chrome.storage.local.set(dataObject, function() {
+    //First, create an object that contains all the old data.
+    //Each data value is uniquely referenced by an integer i.
+    chrome.storage.local.get(function(items) {      
+        var dataObject = {};
+        var i = 0;
+        for (key in items) {
+            dataObject[i] = items[key];
+            i++;
+        }        
         
-        chrome.storage.local.get(function(items) {      
-             
-            var values = [];
-            var i = 0;
-            for (key in items) {
-                
-                values[i] = items[key];
-               i++;
-            }        
-            alert("The entered data was: " + values[0] + " and " + values[1]);
-        });
+        //Append the new data to the end of dataObject.
+        dataObject[i] = document.getElementById("area").value;
+        dataObject[i+1] = document.getElementById("area2").value;
+    
+        //Check that the data box isn't blank.
+        if (!dataObject[i] || !dataObject[i+1]) {
+            alert('Error: Enter text in both boxes.');
+            return;
+        }
+        
+        //Store dataObject.  No callback function is needed here.
+        chrome.storage.local.set(dataObject);
     });
 }
 
