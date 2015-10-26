@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+
+  "name": "Extension Storage",
+  "description": "Extension Storage Skeleton.",
+  "version": "0.0",
+  "browser_action": {
+      "default_title": "Set And Clear Storage.",
+      "default_popup": "popup.html"
+  },
+   "commands": {
+       "_execute_browser_action": { 
+           "suggested_key": {
+               "default":"Ctrl+Shift+1"
+           }
+       }
+  },
+   "permissions": [
+   "storage"
+   ]
+}
